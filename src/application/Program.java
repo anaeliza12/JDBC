@@ -14,44 +14,30 @@ import db.DB;
 public class Program {
 	public static void main(String[] args) {
 
-		Scanner tec = new Scanner(System.in);
-		SimpleDateFormat stf = new SimpleDateFormat("dd/MM/yyyy");
 		Connection con = null;
-		PreparedStatement ps = null;
+		PreparedStatement st = null;
 
 		try {
 			con = DB.getConnection();
-			String script = "INSERT INTO SELLER " + "(Name, Email, BirthDate, BaseSalary, DepartmentId)"
-					+ "VALUES(?,?,?,?,?) ";
-			ps = con.prepareStatement(script, Statement.RETURN_GENERATED_KEYS);
+			st = con.prepareStatement(
+			"UPDATE seller " 
+			+ "set BaseSalary = BaseSalary + ? " 
+			+ "WHERE  Name = ?");
 
-			ps.setString(1, "Ana Eliza");
-			ps.setString(2, "anaeliza@gmail.com");
-			ps.setDate(3, new java.sql.Date(stf.parse("12/06/2004").getTime()));
-			ps.setDouble(4, 3000.0);
-			ps.setInt(5, 2);
+			st.setDouble(1, 4500.0);
+			st.setString(2, "Bob Brown");
 
-			int rows = ps.executeUpdate();
-			if (rows != 0) {
-				ResultSet rs = ps.getGeneratedKeys();
+			int row = st.executeUpdate();
 
-				while (rs.next()) {
-
-					System.out.println(rs.getInt(1));
-				}
-
-			} else
-				System.out.println("No Rows affected");
+			System.out.println(row);
 
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		} catch (ParseException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 
 		finally {
 
-			DB.closeStatemnt(ps);
+			DB.closeStatemnt(st);
 			DB.closeConnection();
 		}
 	}
