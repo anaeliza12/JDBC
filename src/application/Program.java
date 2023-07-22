@@ -25,20 +25,11 @@ public class Program {
 					+ "VALUES(?,?,?,?,?) ";
 			ps = con.prepareStatement(script, Statement.RETURN_GENERATED_KEYS);
 
-			System.out.println("Nome: ");
-			ps.setString(1, tec.nextLine());
-
-			System.out.println("Email: ");
-			ps.setString(2, tec.nextLine());
-
-			System.out.println("Data : ");
-			ps.setDate(3, new java.sql.Date(stf.parse(tec.next()).getTime()));
-
-			System.out.println("Salary : ");
-			ps.setDouble(4, tec.nextDouble());
-
-			System.out.println("Department : ");
-			ps.setInt(5, tec.nextInt());
+			ps.setString(1, "Ana Eliza");
+			ps.setString(2, "anaeliza@gmail.com");
+			ps.setDate(3, new java.sql.Date(stf.parse("12/06/2004").getTime()));
+			ps.setDouble(4, 3000.0);
+			ps.setInt(5, 2);
 
 			int rows = ps.executeUpdate();
 			if (rows != 0) {
