@@ -21,18 +21,14 @@ public class Program {
 
 		try {
 			con = DB.getConnection();
-			st = con.prepareStatement("UPDATE SELLER SET DepartmentId = ? where Name = ?");
-
-			st.setInt(1, 2);
-			st.setString(2, "Fernanda");
+			st = con.prepareStatement("DELETE FROM Department where Id = 15");
 
 			int row = st.executeUpdate();
 			System.out.println(row);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} 
-		finally {
+		} finally {
 
 			DB.closeStatement(st);
 			DB.closeConnection();
