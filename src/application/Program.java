@@ -10,24 +10,45 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import db.DB;
+import db.DbException;
 import db.DbIntegrityException;
 
 public class Program {
-	public static void main(String[] args) {
+	public static void main(String[] args)  {
 
 		SimpleDateFormat stf = new SimpleDateFormat("dd/MM/yyyy");
 		Connection con = null;
-		PreparedStatement st = null;
+		Statement st = null;
 
 		try {
 			con = DB.getConnection();
-			st = con.prepareStatement("DELETE FROM Department where Id = 15");
+			
+			con.setAutoCommit(false);
+			String sql1 = "UPDATE SELLER SET BaseSalary = 2090 where DepartmentId = 1 ";
+			String sql2 = "UPDATE SELLER SET BaseSalary = 3090 where DepartmentId = 1";
+			st = con.createStatement();
 
-			int row = st.executeUpdate();
-			System.out.println(row);
+			int rows1 = st.executeUpdate(sql1);
 
+
+			int x = 1;
+			if (x < 2) {
+				throw new SQLException("Fake Error");
+			}
+			int rows2 = st.executeUpdate(sql2);
+			
+			con.commit();
+
+			System.out.println("rows1: " + rows1);
+			System.out.println("rows2: " + rows2);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				con.rollback();
+				throw new DbException("Transaction rolled back! Caused by: " +  e.getMessage());
+			} catch (SQLException e1) {
+				throw new DbException("Error trying to rollback! Caused by: " + e1.getMessage());
+			}
 		} finally {
 
 			DB.closeStatement(st);
@@ -35,27 +56,3 @@ public class Program {
 		}
 	}
 }
-//		Statement st = null;
-//		ResultSet rs = null;
-//
-//		try {
-//
-//			con = DB.getConnection();
-//			st = con.createStatement();
-//			rs = st.executeQuery("SELECT * FROM seller ");
-//
-//			while (rs.next()) {
-//				System.out.println(rs.getInt("Id") + " " + rs.getString("Name") );
-//
-//			}
-//
-//		} catch (SQLException e) {
-//			System.out.println(e.getMessage());
-//		}
-//
-//		finally {
-//
-//			DB.closeStatemnt(st);
-//			DB.closeResultSet(rs);
-//			DB.closeConnection();
-//		}
